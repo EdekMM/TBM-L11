@@ -1,0 +1,256 @@
+Perfecto. Ahora:
+
+1. En el campo del nombre del fichero escribe: `index.html`
+2. En el área grande de texto de abajo pega todo este código:Aquí tienes todo el código. Selecciónalo todo, cópialo y pégalo en el editor de GitHub:
+
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TBM · Línea 11 Metro Madrid</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f14;
+  --bg2: #141720;
+  --bg3: #1c2030;
+  --border: #2a2f3f;
+  --accent: #4f8ef7;
+  --accent2: #34d399;
+  --warn: #f59e0b;
+  --danger: #ef4444;
+  --text: #e8eaf0;
+  --text2: #8b91a8;
+  --text3: #555d74;
+  --radius: 12px;
+  --radius-sm: 7px;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
+.app { max-width: 520px; margin: 0 auto; padding: 16px 14px 40px; }
+.header { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 14px; position: relative; overflow: hidden; }
+.header::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); }
+.header-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.project-label { font-size: 10px; font-family: var(--mono); color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 4px; }
+.project-title { font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.2; }
+.project-sub { font-size: 12px; color: var(--text2); margin-top: 3px; }
+.header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 5px; flex-shrink: 0; }
+.badge { font-size: 11px; font-family: var(--mono); padding: 3px 9px; border-radius: 20px; white-space: nowrap; }
+.badge-day { background: rgba(52,211,153,.12); color: var(--accent2); border: 1px solid rgba(52,211,153,.2); }
+.badge-data { background: rgba(79,142,247,.1); color: var(--accent); border: 1px solid rgba(79,142,247,.2); }
+.nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+.nav-btn { padding: 10px 6px; font-size: 12px; font-weight: 500; font-family: var(--sans); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); color: var(--text2); cursor: pointer; transition: all .18s; letter-spacing: .02em; }
+.nav-btn:hover { border-color: var(--accent); color: var(--accent); }
+.nav-btn.active { background: rgba(79,142,247,.12); border-color: rgba(79,142,247,.4); color: var(--accent); font-weight: 600; }
+.section { display: none; }
+.section.active { display: block; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px; }
+.card-title { font-size: 10px; font-family: var(--mono); color: var(--text3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px; }
+.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.metric { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 8px; text-align: center; }
+.metric-label { font-size: 10px; color: var(--text3); margin-bottom: 6px; font-family: var(--mono); }
+.metric-val { font-size: 22px; font-weight: 600; color: var(--text); font-family: var(--mono); line-height: 1; }
+.metric-unit { font-size: 10px; color: var(--text3); margin-top: 3px; }
+.comment-box { background: var(--bg3); border-left: 2px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 12px; font-size: 13px; color: var(--text2); line-height: 1.5; min-height: 36px; }
+.dov-row { padding: 10px 0; border-bottom: 1px solid var(--border); }
+.dov-row:last-child { border-bottom: none; }
+.dov-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.dov-label { font-size: 13px; color: var(--text2); flex: 1; padding-right: 8px; }
+.dov-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.dov-val { font-size: 14px; font-weight: 600; font-family: var(--mono); color: var(--text); }
+.pct-pill { font-size: 10px; font-family: var(--mono); padding: 2px 7px; border-radius: 20px; }
+.pct-ok { background: rgba(52,211,153,.12); color: var(--accent2); border: 1px solid rgba(52,211,153,.2); }
+.pct-warn { background: rgba(245,158,11,.1); color: var(--warn); border: 1px solid rgba(245,158,11,.2); }
+.progbar { height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; margin-bottom: 5px; }
+.progfill { height: 100%; border-radius: 3px; transition: width .7s cubic-bezier(.4,0,.2,1); }
+.dov-sem { display: flex; justify-content: space-between; }
+.dov-sem span { font-size: 10px; font-family: var(--mono); color: var(--text3); }
+.tot-nums { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.tot-big { font-size: 26px; font-weight: 600; font-family: var(--mono); color: var(--text); }
+.tot-sub { font-size: 12px; color: var(--text2); }
+.tot-label { font-size: 11px; color: var(--text3); }
+.tot-pct-row { display: flex; justify-content: flex-end; margin-top: 5px; }
+.tot-pct-val { font-size: 12px; font-family: var(--mono); color: var(--accent); }
+.station-row { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.station-row:last-child { border-bottom: none; }
+.station-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.station-name { font-size: 13px; font-weight: 500; color: var(--text); }
+.station-name.pending { color: var(--text3); }
+.station-pct { font-size: 12px; font-family: var(--mono); color: var(--accent); font-weight: 600; }
+.station-dist { font-size: 10px; font-family: var(--mono); color: var(--text3); }
+.station-meta { display: flex; justify-content: space-between; margin-top: 4px; }
+.station-meta span { font-size: 10px; font-family: var(--mono); color: var(--text3); }
+.tbm-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-right: 6px; box-shadow: 0 0 6px var(--accent); animation: pulse 1.5s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(.8); } }
+.update-btn { width: 100%; padding: 12px; margin-top: 4px; font-size: 13px; font-weight: 500; font-family: var(--sans); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); color: var(--text2); cursor: pointer; transition: all .18s; letter-spacing: .02em; }
+.update-btn:hover { border-color: var(--accent); color: var(--accent); }
+.update-btn:active { transform: scale(.98); }
+.status { font-size: 11px; font-family: var(--mono); color: var(--text3); text-align: center; margin-top: 10px; }
+.error-box { background: rgba(239,68,68,.1); border: 1px solid rgba(239,68,68,.25); color: #fca5a5; border-radius: var(--radius-sm); padding: 12px 14px; font-size: 12px; margin-bottom: 12px; line-height: 1.5; }
+.footer { text-align: center; margin-top: 24px; font-size: 10px; font-family: var(--mono); color: var(--text3); letter-spacing: .06em; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <div class="header-left">
+        <div class="project-label">Dragados · Grupo ACS</div>
+        <div class="project-title">Línea 11 Metro Madrid</div>
+        <div class="project-sub">Comillas → Conde de Casal · TBM</div>
+      </div>
+      <div class="header-right">
+        <span class="badge badge-day" id="badge-hoy">—</span>
+        <span class="badge badge-data" id="badge-sheet">Datos: —</span>
+      </div>
+    </div>
+  </div>
+  <div class="nav">
+    <button class="nav-btn active" onclick="showTab('tbm')">⚙ TBM</button>
+    <button class="nav-btn" onclick="showTab('dovelas')">⬡ Dovelas</button>
+    <button class="nav-btn" onclick="showTab('avance')">→ Avance</button>
+  </div>
+  <div id="error-area"></div>
+  <div id="sec-tbm" class="section active">
+    <div class="card">
+      <div class="card-title">Anillos colocados</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">HOY</div><div class="metric-val" id="a-hoy">—</div><div class="metric-unit">anillos</div></div>
+        <div class="metric"><div class="metric-label">MES</div><div class="metric-val" id="a-mes">—</div><div class="metric-unit">anillos</div></div>
+        <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="a-orig">—</div><div class="metric-unit">anillos</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Metros excavados</div>
+      <div class="metrics">
+        <div class="metric"><div class="metric-label">HOY</div><div class="metric-val" id="m-hoy">—</div><div class="metric-unit">m</div></div>
+        <div class="metric"><div class="metric-label">MES</div><div class="metric-val" id="m-mes">—</div><div class="metric-unit">m</div></div>
+        <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="m-orig">—</div><div class="metric-unit">m</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Comentarios</div>
+      <div class="comment-box" id="comentarios">—</div>
+    </div>
+  </div>
+  <div id="sec-dovelas" class="section">
+    <div class="card">
+      <div class="card-title">Fabricación de dovelas — <span id="semana-label">—</span></div>
+      <div id="dovelas-rows"></div>
+    </div>
+  </div>
+  <div id="sec-avance" class="section">
+    <div class="card">
+      <div class="card-title">Progreso total del túnel</div>
+      <div class="tot-nums">
+        <div><div class="tot-label">Metros ejecutados</div><div class="tot-big" id="tot-ejec">—</div></div>
+        <div style="text-align:right"><div class="tot-label">Total túnel</div><div class="tot-sub" id="tot-total">—</div></div>
+      </div>
+      <div class="progbar" style="height:8px;margin-top:4px">
+        <div class="progfill" id="tot-bar" style="width:0%;background:linear-gradient(90deg,#4f8ef7,#34d399)"></div>
+      </div>
+      <div class="tot-pct-row"><span class="tot-pct-val" id="tot-pct">—</span></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Posición por tramo</div>
+      <div id="avance-rows"></div>
+    </div>
+  </div>
+  <button class="update-btn" onclick="loadData()">↺ Actualizar datos</button>
+  <div class="status" id="status-line">Iniciando...</div>
+  <div class="footer">DRAGADOS · L11 METRO MADRID · SISTEMA DE CONTROL TBM</div>
+</div>
+<script>
+const SHEET_ID = '1FArDMn-wB4camgTPpRyAlyTfgDlKAw_r86V74gCsVgI';
+const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=`;
+const hoy = new Date();
+document.getElementById('badge-hoy').textContent = 'HOY · ' + hoy.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }).toUpperCase();
+function showTab(t) {
+  ['tbm','dovelas','avance'].forEach((s,i) => {
+    document.getElementById('sec-'+s).classList.toggle('active', s===t);
+    document.querySelectorAll('.nav-btn')[i].classList.toggle('active', s===t);
+  });
+}
+function setStatus(msg) { document.getElementById('status-line').textContent = msg; }
+function showError(msg) { document.getElementById('error-area').innerHTML = msg ? `<div class="error-box">⚠ ${msg}</div>` : ''; }
+async function fetchSheet(name) {
+  const url = `${BASE}${encodeURIComponent(name)}&t=${Date.now()}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Error ${res.status} al leer la pestaña "${name}". Comprueba que el Google Sheet está compartido como público (Cualquiera con el enlace → Lector).`);
+  const text = await res.text();
+  const json = JSON.parse(text.replace(/^.*?({.*}).*$/s, '$1'));
+  return json.table.rows.map(r => r.c.map(c => c ? c.v : null));
+}
+function fmt(v, dec=0) {
+  if (v===null||v===undefined||v==='') return '—';
+  const n = parseFloat(v);
+  if (isNaN(n)) return String(v);
+  return dec>0 ? n.toFixed(dec) : Math.round(n).toLocaleString('es-ES');
+}
+function bar(pct, color) {
+  const w = Math.min(100, Math.max(0, (parseFloat(pct)||0)*100));
+  return `<div class="progbar"><div class="progfill" style="width:${w.toFixed(1)}%;background:${color}"></div></div>`;
+}
+async function loadTBM() {
+  const rows = await fetchSheet('TBM');
+  const fecha = rows[0]?.[3];
+  if (fecha) { const d = new Date(fecha); document.getElementById('badge-sheet').textContent = 'DATOS · ' + (isNaN(d.getTime()) ? String(fecha) : d.toLocaleDateString('es-ES', {day:'2-digit',month:'2-digit',year:'numeric'})); }
+  const a = rows[2]||[], m = rows[3]||[];
+  document.getElementById('a-hoy').textContent = fmt(a[1]);
+  document.getElementById('a-mes').textContent = fmt(a[2]);
+  document.getElementById('a-orig').textContent = fmt(a[3]);
+  document.getElementById('m-hoy').textContent = fmt(m[1],1);
+  document.getElementById('m-mes').textContent = fmt(m[2],1);
+  document.getElementById('m-orig').textContent = fmt(m[3],1);
+  document.getElementById('comentarios').textContent = a[4]||m[4]||'Sin comentarios';
+}
+async function loadDovelas() {
+  const rows = await fetchSheet('DOVELAS');
+  document.getElementById('semana-label').textContent = rows[0]?.[1]||'—';
+  const c = document.getElementById('dovelas-rows'); c.innerHTML='';
+  rows.slice(1).forEach(r => {
+    if (!r[0]) return;
+    const pct = parseFloat(r[2]), hasPct = !isNaN(pct);
+    const color = hasPct ? (pct>=0.8?'#34d399':'#f59e0b') : '#4f8ef7';
+    const pillCls = hasPct ? (pct>=0.8?'pct-ok':'pct-warn') : '';
+    c.innerHTML += `<div class="dov-row"><div class="dov-top"><span class="dov-label">${r[0]}</span><div class="dov-right">${hasPct?`<span class="pct-pill ${pillCls}">${(pct*100).toFixed(1)}%</span>`:''}<span class="dov-val">${fmt(r[1])}</span></div></div>${hasPct?bar(pct,color):''}<div class="dov-sem"><span>Sem. ant.: ${fmt(r[3])}</span><span>Sem. act.: ${fmt(r[4])}</span></div></div>`;
+  });
+}
+async function loadAvance() {
+  const rows = await fetchSheet('AVANCE');
+  const suma = rows[rows.length-1];
+  const totEjec=parseFloat(suma?.[2]), totTotal=parseFloat(suma?.[1]), totPct=parseFloat(suma?.[4]);
+  document.getElementById('tot-ejec').textContent = isNaN(totEjec)?'—':totEjec.toFixed(0)+' m';
+  document.getElementById('tot-total').textContent = isNaN(totTotal)?'—':totTotal.toFixed(0)+' m';
+  document.getElementById('tot-pct').textContent = isNaN(totPct)?'—':(totPct*100).toFixed(2)+'%';
+  if (!isNaN(totPct)) document.getElementById('tot-bar').style.width = (totPct*100).toFixed(2)+'%';
+  const c = document.getElementById('avance-rows'); c.innerHTML='';
+  rows.slice(2, rows.length-1).forEach(r => {
+    if (!r[0]) return;
+    const ejec=parseFloat(r[2]), pct=parseFloat(r[4]), dist=parseFloat(r[1]), pdte=parseFloat(r[3]);
+    const activo = !isNaN(ejec)&&ejec>0;
+    c.innerHTML += `<div class="station-row"><div class="station-top"><span class="station-name ${activo?'':'pending'}">${activo?'<span class="tbm-dot"></span>':''}${r[0]}</span>${activo?`<span class="station-pct">${(pct*100).toFixed(1)}%</span>`:'<span style="font-size:10px;font-family:var(--mono);color:var(--text3)">PENDIENTE</span>'}</div><div style="margin-bottom:5px"><span class="station-dist">${isNaN(dist)?'—':dist.toFixed(0)} m tramo</span></div>${activo?bar(pct,'#4f8ef7')+'<div class="station-meta"><span>Ejecutado: '+ejec.toFixed(0)+' m</span><span>Pendiente: '+(isNaN(pdte)?'—':pdte.toFixed(0))+' m</span></div>':''}</div>`;
+  });
+}
+async function loadData() {
+  setStatus('Actualizando...');
+  showError('');
+  try {
+    await Promise.all([loadTBM(), loadDovelas(), loadAvance()]);
+    setStatus('Última actualización: ' + new Date().toLocaleTimeString('es-ES'));
+  } catch(e) {
+    showError(e.message);
+    setStatus('Error al cargar datos');
+  }
+}
+loadData();
+</script>
+</body>
+</html>
+```
+
+Copia todo esto, pégalo en el editor de GitHub, y pulsa **Commit changes**. Dime cuando esté hecho.
