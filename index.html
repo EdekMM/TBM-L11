@@ -40,6 +40,15 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .metric-val { font-size: 20px; font-weight: 600; color: var(--text); font-family: var(--mono); line-height: 1; }
 .metric-unit { font-size: 9px; color: var(--text3); margin-top: 3px; }
 .metric-fecha { font-size: 9px; color: var(--accent); font-family: var(--mono); margin-top: 4px; }
+.stat-row { display: flex; justify-content: space-between; align-items: center; padding: 7px 0; border-bottom: 1px solid var(--border); }
+.stat-row:last-child { border-bottom: none; }
+.stat-label { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+.stat-vals { display: flex; gap: 16px; }
+.stat-val { font-size: 13px; font-weight: 600; font-family: var(--mono); color: var(--text); text-align: right; min-width: 40px; }
+.stat-val span { font-size: 9px; color: var(--text3); font-weight: 400; margin-left: 2px; }
+.stat-fecha { font-size: 9px; color: var(--accent); font-family: var(--mono); text-align: right; }
+.col-header { display: flex; justify-content: flex-end; gap: 16px; margin-bottom: 6px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+.col-header span { font-size: 9px; font-family: var(--mono); color: var(--text3); min-width: 40px; text-align: right; letter-spacing: .04em; }
 .comment-box { background: var(--bg3); border-left: 2px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 12px; font-size: 13px; color: var(--text2); line-height: 1.5; min-height: 36px; }
 .dov-row { padding: 10px 0; border-bottom: 1px solid var(--border); }
 .dov-row:last-child { border-bottom: none; }
@@ -101,6 +110,8 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   </div>
   <div id="error-area"></div>
   <div id="sec-tbm" class="section active">
+
+    <!-- Anillos -->
     <div class="card">
       <div class="card-title">Anillos colocados</div>
       <div class="metrics" style="grid-template-columns:repeat(4,1fr)">
@@ -110,6 +121,8 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
         <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="a-orig">—</div><div class="metric-unit">anillos</div></div>
       </div>
     </div>
+
+    <!-- Metros -->
     <div class="card">
       <div class="card-title">Metros excavados</div>
       <div class="metrics" style="grid-template-columns:repeat(4,1fr)">
@@ -119,33 +132,90 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
         <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="m-orig">—</div><div class="metric-unit">m</div></div>
       </div>
     </div>
+
+    <!-- Comentarios -->
     <div class="card">
       <div class="card-title">Comentarios</div>
       <div class="comment-box" id="comentarios">—</div>
     </div>
+
+    <!-- Medias -->
     <div class="card">
-      <div class="card-title">Máximos históricos — Anillos</div>
-      <div class="metrics" style="grid-template-columns:repeat(3,1fr)">
-        <div class="metric"><div class="metric-label">MÁX. SEMANA</div><div class="metric-val" id="am-sem">—</div><div class="metric-unit">anillos</div><div class="metric-fecha" id="am-sem-f">—</div></div>
-        <div class="metric"><div class="metric-label">MÁX. MES</div><div class="metric-val" id="am-mes">—</div><div class="metric-unit">anillos</div><div class="metric-fecha" id="am-mes-f">—</div></div>
-        <div class="metric"><div class="metric-label">MÁX. ORIGEN</div><div class="metric-val" id="am-orig">—</div><div class="metric-unit">anillos</div><div class="metric-fecha" id="am-orig-f">—</div></div>
+      <div class="card-title">Medias de producción</div>
+      <div class="col-header">
+        <span>SEMANA</span>
+        <span>MES</span>
+        <span>ORIGEN</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Anillos</span>
+        <div class="stat-vals">
+          <span class="stat-val" id="amed-sem">—<span>ani</span></span>
+          <span class="stat-val" id="amed-mes">—<span>ani</span></span>
+          <span class="stat-val" id="amed-orig">—<span>ani</span></span>
+        </div>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Metros</span>
+        <div class="stat-vals">
+          <span class="stat-val" id="mmed-sem">—<span>m</span></span>
+          <span class="stat-val" id="mmed-mes">—<span>m</span></span>
+          <span class="stat-val" id="mmed-orig">—<span>m</span></span>
+        </div>
       </div>
     </div>
+
+    <!-- Máximos -->
     <div class="card">
-      <div class="card-title">Máximos históricos — Metros</div>
-      <div class="metrics" style="grid-template-columns:repeat(3,1fr)">
-        <div class="metric"><div class="metric-label">MÁX. SEMANA</div><div class="metric-val" id="mm-sem">—</div><div class="metric-unit">m</div><div class="metric-fecha" id="mm-sem-f">—</div></div>
-        <div class="metric"><div class="metric-label">MÁX. MES</div><div class="metric-val" id="mm-mes">—</div><div class="metric-unit">m</div><div class="metric-fecha" id="mm-mes-f">—</div></div>
-        <div class="metric"><div class="metric-label">MÁX. ORIGEN</div><div class="metric-val" id="mm-orig">—</div><div class="metric-unit">m</div><div class="metric-fecha" id="mm-orig-f">—</div></div>
+      <div class="card-title">Máximos históricos</div>
+      <div class="col-header">
+        <span>SEMANA</span>
+        <span>MES</span>
+        <span>ORIGEN</span>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Anillos</span>
+        <div class="stat-vals">
+          <span class="stat-val" id="amax-sem">—<span>ani</span></span>
+          <span class="stat-val" id="amax-mes">—<span>ani</span></span>
+          <span class="stat-val" id="amax-orig">—<span>ani</span></span>
+        </div>
+      </div>
+      <div class="stat-row" style="margin-bottom:4px">
+        <span class="stat-label" style="visibility:hidden">x</span>
+        <div class="stat-vals">
+          <span class="stat-fecha" id="amax-sem-f">—</span>
+          <span class="stat-fecha" id="amax-mes-f">—</span>
+          <span class="stat-fecha" id="amax-orig-f">—</span>
+        </div>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label">Metros</span>
+        <div class="stat-vals">
+          <span class="stat-val" id="mmax-sem">—<span>m</span></span>
+          <span class="stat-val" id="mmax-mes">—<span>m</span></span>
+          <span class="stat-val" id="mmax-orig">—<span>m</span></span>
+        </div>
+      </div>
+      <div class="stat-row">
+        <span class="stat-label" style="visibility:hidden">x</span>
+        <div class="stat-vals">
+          <span class="stat-fecha" id="mmax-sem-f">—</span>
+          <span class="stat-fecha" id="mmax-mes-f">—</span>
+          <span class="stat-fecha" id="mmax-orig-f">—</span>
+        </div>
       </div>
     </div>
+
   </div>
+
   <div id="sec-dovelas" class="section">
     <div class="card">
       <div class="card-title">Fabricación de dovelas — <span id="semana-label">—</span></div>
       <div id="dovelas-rows"></div>
     </div>
   </div>
+
   <div id="sec-avance" class="section">
     <div class="card">
       <div class="card-title">Progreso total del túnel</div>
@@ -163,6 +233,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
       <div id="avance-rows"></div>
     </div>
   </div>
+
   <button class="update-btn" onclick="loadData()">↺ Actualizar datos</button>
   <div class="status" id="status-line">Iniciando...</div>
   <div class="footer">DRAGADOS · L11 METRO MADRID · SISTEMA DE CONTROL TBM · © EMM</div>
@@ -189,8 +260,7 @@ async function fetchSheet(name) {
   if (!res.ok) throw new Error(`Error ${res.status} al leer "${name}".`);
   const text = await res.text();
   const json = JSON.parse(text.replace(/^.*?({.*}).*$/s,'$1'));
-  // Devolvemos {v, f} para cada celda
-  return json.table.rows.map(r => r.c.map(c => c ? {v:c.v, f:c.f||null} : {v:null,f:null}));
+  return json.table.rows.map(r => r.c.map(c => c?{v:c.v,f:c.f||null}:{v:null,f:null}));
 }
 
 function val(cell, dec=0) {
@@ -201,58 +271,65 @@ function val(cell, dec=0) {
   return dec>0 ? n.toFixed(dec) : Math.round(n).toLocaleString('es-ES');
 }
 
-function fecha(cell) {
-  // Google devuelve el valor formateado en "f" — lo usamos directamente
-  return cell?.f || '—';
-}
+function fecha(cell) { return cell?.f || '—'; }
 
 function bar(pct, color) {
   const w = Math.min(100,Math.max(0,(parseFloat(pct)||0)*100));
   return `<div class="progbar"><div class="progfill" style="width:${w.toFixed(1)}%;background:${color}"></div></div>`;
 }
 
+function setVal(id, cell, dec=0) { document.getElementById(id).innerHTML = val(cell,dec)+(dec>0?'<span>m</span>':'<span>ani</span>'); }
+function setValM(id, cell) { document.getElementById(id).innerHTML = val(cell,1)+'<span>m</span>'; }
+
 async function loadTBM() {
   const rows = await fetchSheet('TBM');
-  // Google omite fila 1 vacía y trata fila 2 como cabecera → parsedNumHeaders:1
-  // rows[0] = fila 2 FECHAS
-  // rows[1] = fila 3 cabecera PRODUCCIÓN TBM
-  // rows[2] = fila 4 Anillos
-  // rows[3] = fila 5 Metros
-  const F = rows[0] || [];  // fechas
-  const A = rows[2] || [];  // anillos
-  const M = rows[3] || [];  // metros
+  // rows[0]=FECHAS, rows[1]=cabecera, rows[2]=Anillos, rows[3]=Metros
+  // B=1:Hoy, C=2:Ant, D=3:Mes, E=4:Orig, F=5:Coment
+  // G=6:MediaSem, H=7:MediaMes, I=8:MediaOrig
+  // J=9:MaxSem, K=10:MaxMes, L=11:MaxOrig
+  const F = rows[0]||[], A = rows[2]||[], M = rows[3]||[];
 
-  // Badge fecha datos (col B = índice 1)
-  document.getElementById('badge-sheet').textContent = 'DATOS · ' + (fecha(F[1]));
+  document.getElementById('badge-sheet').textContent = 'DATOS · '+(fecha(F[1]));
 
-  // Anillos: B=1:Hoy, C=2:Ant, D=3:Mes, E=4:Orig, F=5:Coment, G=6:MaxSem, H=7:MaxMes, I=8:MaxOrig
+  // Anillos diario
   document.getElementById('a-hoy').textContent   = val(A[1]);
   document.getElementById('a-hoy-f').textContent = fecha(F[1]);
   document.getElementById('a-ant').textContent   = val(A[2]);
   document.getElementById('a-ant-f').textContent = fecha(F[2]);
   document.getElementById('a-mes').textContent   = val(A[3]);
   document.getElementById('a-orig').textContent  = val(A[4]);
-  document.getElementById('comentarios').textContent = A[5]?.v || '—';
-  document.getElementById('am-sem').textContent   = val(A[6]);
-  document.getElementById('am-sem-f').textContent = fecha(F[6]);
-  document.getElementById('am-mes').textContent   = val(A[7]);
-  document.getElementById('am-mes-f').textContent = fecha(F[7]);
-  document.getElementById('am-orig').textContent  = val(A[8]);
-  document.getElementById('am-orig-f').textContent= fecha(F[8]);
 
-  // Metros
+  // Metros diario
   document.getElementById('m-hoy').textContent   = val(M[1],1);
   document.getElementById('m-hoy-f').textContent = fecha(F[1]);
   document.getElementById('m-ant').textContent   = val(M[2],1);
   document.getElementById('m-ant-f').textContent = fecha(F[2]);
   document.getElementById('m-mes').textContent   = val(M[3],1);
   document.getElementById('m-orig').textContent  = val(M[4],1);
-  document.getElementById('mm-sem').textContent   = val(M[6],1);
-  document.getElementById('mm-sem-f').textContent = fecha(F[6]);
-  document.getElementById('mm-mes').textContent   = val(M[7],1);
-  document.getElementById('mm-mes-f').textContent = fecha(F[7]);
-  document.getElementById('mm-orig').textContent  = val(M[8],1);
-  document.getElementById('mm-orig-f').textContent= fecha(F[8]);
+
+  document.getElementById('comentarios').textContent = A[5]?.v || '—';
+
+  // Medias (G=6, H=7, I=8)
+  document.getElementById('amed-sem').innerHTML  = val(A[6])+'<span>ani</span>';
+  document.getElementById('amed-mes').innerHTML  = val(A[7])+'<span>ani</span>';
+  document.getElementById('amed-orig').innerHTML = val(A[8])+'<span>ani</span>';
+  document.getElementById('mmed-sem').innerHTML  = val(M[6],1)+'<span>m</span>';
+  document.getElementById('mmed-mes').innerHTML  = val(M[7],1)+'<span>m</span>';
+  document.getElementById('mmed-orig').innerHTML = val(M[8],1)+'<span>m</span>';
+
+  // Máximos (J=9, K=10, L=11)
+  document.getElementById('amax-sem').innerHTML  = val(A[9])+'<span>ani</span>';
+  document.getElementById('amax-mes').innerHTML  = val(A[10])+'<span>ani</span>';
+  document.getElementById('amax-orig').innerHTML = val(A[11])+'<span>ani</span>';
+  document.getElementById('amax-sem-f').textContent  = fecha(F[9]);
+  document.getElementById('amax-mes-f').textContent  = fecha(F[10]);
+  document.getElementById('amax-orig-f').textContent = fecha(F[11]);
+  document.getElementById('mmax-sem').innerHTML  = val(M[9],1)+'<span>m</span>';
+  document.getElementById('mmax-mes').innerHTML  = val(M[10],1)+'<span>m</span>';
+  document.getElementById('mmax-orig').innerHTML = val(M[11],1)+'<span>m</span>';
+  document.getElementById('mmax-sem-f').textContent  = fecha(F[9]);
+  document.getElementById('mmax-mes-f').textContent  = fecha(F[10]);
+  document.getElementById('mmax-orig-f').textContent = fecha(F[11]);
 }
 
 async function loadDovelas() {
