@@ -8,7 +8,7 @@
 <style>
 :root {
   --bg: #0d0f14; --bg2: #141720; --bg3: #1c2030; --border: #2a2f3f;
-  --accent: #4f8ef7; --accent2: #34d399; --warn: #f59e0b; --danger: #ef4444;
+  --accent: #4f8ef7; --accent2: #34d399; --warn: #f59e0b;
   --text: #e8eaf0; --text2: #8b91a8; --text3: #555d74;
   --radius: 12px; --radius-sm: 7px;
   --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
@@ -27,7 +27,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .badge-day { background: rgba(52,211,153,.12); color: var(--accent2); border: 1px solid rgba(52,211,153,.2); }
 .badge-data { background: rgba(79,142,247,.1); color: var(--accent); border: 1px solid rgba(79,142,247,.2); }
 .nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-.nav-btn { padding: 10px 6px; font-size: 12px; font-weight: 500; font-family: var(--sans); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); color: var(--text2); cursor: pointer; transition: all .18s; letter-spacing: .02em; }
+.nav-btn { padding: 10px 6px; font-size: 12px; font-weight: 500; font-family: var(--sans); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); color: var(--text2); cursor: pointer; transition: all .18s; }
 .nav-btn:hover { border-color: var(--accent); color: var(--accent); }
 .nav-btn.active { background: rgba(79,142,247,.12); border-color: rgba(79,142,247,.4); color: var(--accent); font-weight: 600; }
 .section { display: none; }
@@ -36,9 +36,10 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .card-title { font-size: 10px; font-family: var(--mono); color: var(--text3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px; }
 .metrics { display: grid; gap: 8px; }
 .metric { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 6px; text-align: center; }
-.metric-label { font-size: 9px; color: var(--text3); margin-bottom: 5px; font-family: var(--mono); }
+.metric-label { font-size: 9px; color: var(--text3); margin-bottom: 5px; font-family: var(--mono); letter-spacing: .04em; }
 .metric-val { font-size: 20px; font-weight: 600; color: var(--text); font-family: var(--mono); line-height: 1; }
 .metric-unit { font-size: 9px; color: var(--text3); margin-top: 3px; }
+.metric-fecha { font-size: 9px; color: var(--accent); font-family: var(--mono); margin-top: 4px; }
 .comment-box { background: var(--bg3); border-left: 2px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 12px; font-size: 13px; color: var(--text2); line-height: 1.5; min-height: 36px; }
 .dov-row { padding: 10px 0; border-bottom: 1px solid var(--border); }
 .dov-row:last-child { border-bottom: none; }
@@ -70,7 +71,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .station-meta span { font-size: 10px; font-family: var(--mono); color: var(--text3); }
 .tbm-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-right: 6px; box-shadow: 0 0 6px var(--accent); animation: pulse 1.5s ease-in-out infinite; }
 @keyframes pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .5; transform: scale(.8); } }
-.update-btn { width: 100%; padding: 12px; margin-top: 4px; font-size: 13px; font-weight: 500; font-family: var(--sans); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); color: var(--text2); cursor: pointer; transition: all .18s; letter-spacing: .02em; }
+.update-btn { width: 100%; padding: 12px; margin-top: 4px; font-size: 13px; font-weight: 500; font-family: var(--sans); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--bg2); color: var(--text2); cursor: pointer; transition: all .18s; }
 .update-btn:hover { border-color: var(--accent); color: var(--accent); }
 .update-btn:active { transform: scale(.98); }
 .status { font-size: 11px; font-family: var(--mono); color: var(--text3); text-align: center; margin-top: 10px; }
@@ -82,7 +83,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 <div class="app">
   <div class="header">
     <div class="header-top">
-      <div class="header-left">
+      <div>
         <div class="project-label">Dragados · Grupo ACS</div>
         <div class="project-title">Línea 11 Metro Madrid</div>
         <div class="project-sub">Comillas → Conde de Casal · TBM</div>
@@ -103,8 +104,8 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
     <div class="card">
       <div class="card-title">Anillos colocados</div>
       <div class="metrics" style="grid-template-columns:repeat(4,1fr)">
-        <div class="metric"><div class="metric-label">HOY</div><div class="metric-val" id="a-hoy">—</div><div class="metric-unit">anillos</div></div>
-        <div class="metric"><div class="metric-label">ANTERIOR</div><div class="metric-val" id="a-ant">—</div><div class="metric-unit">anillos</div></div>
+        <div class="metric"><div class="metric-label">HOY</div><div class="metric-val" id="a-hoy">—</div><div class="metric-unit">anillos</div><div class="metric-fecha" id="a-hoy-f">—</div></div>
+        <div class="metric"><div class="metric-label">ANTERIOR</div><div class="metric-val" id="a-ant">—</div><div class="metric-unit">anillos</div><div class="metric-fecha" id="a-ant-f">—</div></div>
         <div class="metric"><div class="metric-label">MES</div><div class="metric-val" id="a-mes">—</div><div class="metric-unit">anillos</div></div>
         <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="a-orig">—</div><div class="metric-unit">anillos</div></div>
       </div>
@@ -112,8 +113,8 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
     <div class="card">
       <div class="card-title">Metros excavados</div>
       <div class="metrics" style="grid-template-columns:repeat(4,1fr)">
-        <div class="metric"><div class="metric-label">HOY</div><div class="metric-val" id="m-hoy">—</div><div class="metric-unit">m</div></div>
-        <div class="metric"><div class="metric-label">ANTERIOR</div><div class="metric-val" id="m-ant">—</div><div class="metric-unit">m</div></div>
+        <div class="metric"><div class="metric-label">HOY</div><div class="metric-val" id="m-hoy">—</div><div class="metric-unit">m</div><div class="metric-fecha" id="m-hoy-f">—</div></div>
+        <div class="metric"><div class="metric-label">ANTERIOR</div><div class="metric-val" id="m-ant">—</div><div class="metric-unit">m</div><div class="metric-fecha" id="m-ant-f">—</div></div>
         <div class="metric"><div class="metric-label">MES</div><div class="metric-val" id="m-mes">—</div><div class="metric-unit">m</div></div>
         <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="m-orig">—</div><div class="metric-unit">m</div></div>
       </div>
@@ -121,6 +122,22 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
     <div class="card">
       <div class="card-title">Comentarios</div>
       <div class="comment-box" id="comentarios">—</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Máximos históricos — Anillos</div>
+      <div class="metrics" style="grid-template-columns:repeat(3,1fr)">
+        <div class="metric"><div class="metric-label">MÁX. SEMANA</div><div class="metric-val" id="am-sem">—</div><div class="metric-unit">anillos</div><div class="metric-fecha" id="am-sem-f">—</div></div>
+        <div class="metric"><div class="metric-label">MÁX. MES</div><div class="metric-val" id="am-mes">—</div><div class="metric-unit">anillos</div><div class="metric-fecha" id="am-mes-f">—</div></div>
+        <div class="metric"><div class="metric-label">MÁX. ORIGEN</div><div class="metric-val" id="am-orig">—</div><div class="metric-unit">anillos</div><div class="metric-fecha" id="am-orig-f">—</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Máximos históricos — Metros</div>
+      <div class="metrics" style="grid-template-columns:repeat(3,1fr)">
+        <div class="metric"><div class="metric-label">MÁX. SEMANA</div><div class="metric-val" id="mm-sem">—</div><div class="metric-unit">m</div><div class="metric-fecha" id="mm-sem-f">—</div></div>
+        <div class="metric"><div class="metric-label">MÁX. MES</div><div class="metric-val" id="mm-mes">—</div><div class="metric-unit">m</div><div class="metric-fecha" id="mm-mes-f">—</div></div>
+        <div class="metric"><div class="metric-label">MÁX. ORIGEN</div><div class="metric-val" id="mm-orig">—</div><div class="metric-unit">m</div><div class="metric-fecha" id="mm-orig-f">—</div></div>
+      </div>
     </div>
   </div>
   <div id="sec-dovelas" class="section">
@@ -148,7 +165,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   </div>
   <button class="update-btn" onclick="loadData()">↺ Actualizar datos</button>
   <div class="status" id="status-line">Iniciando...</div>
-  <div class="footer">DRAGADOS · L11 METRO MADRID · SISTEMA DE CONTROL TBM</div>
+  <div class="footer">DRAGADOS · L11 METRO MADRID · SISTEMA DE CONTROL TBM · © EMM</div>
 </div>
 <script>
 const SHEET_ID = '1FArDMn-wB4camgTPpRyAlyTfgDlKAw_r86V74gCsVgI';
@@ -166,7 +183,7 @@ function showError(msg) { document.getElementById('error-area').innerHTML = msg 
 async function fetchSheet(name) {
   const url = `${BASE}${encodeURIComponent(name)}&t=${Date.now()}`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Error ${res.status} al leer la pestaña "${name}".`);
+  if (!res.ok) throw new Error(`Error ${res.status} al leer "${name}". Comprueba que el Sheet está compartido como público (Lector).`);
   const text = await res.text();
   const json = JSON.parse(text.replace(/^.*?({.*}).*$/s, '$1'));
   return json.table.rows.map(r => r.c.map(c => c ? c.v : null));
@@ -177,28 +194,48 @@ function fmt(v, dec=0) {
   if (isNaN(n)) return String(v);
   return dec>0 ? n.toFixed(dec) : Math.round(n).toLocaleString('es-ES');
 }
+function fmtF(v) {
+  if (!v) return '—';
+  const d = new Date(v);
+  if (isNaN(d.getTime())) return String(v);
+  return d.toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit', year:'2-digit'});
+}
 function bar(pct, color) {
   const w = Math.min(100, Math.max(0, (parseFloat(pct)||0)*100));
   return `<div class="progbar"><div class="progfill" style="width:${w.toFixed(1)}%;background:${color}"></div></div>`;
 }
 async function loadTBM() {
   const rows = await fetchSheet('TBM');
-  const fecha = rows[0]?.[3];
-  if (fecha) {
-    const d = new Date(fecha);
-    document.getElementById('badge-sheet').textContent = 'DATOS · ' + (isNaN(d.getTime()) ? String(fecha) : d.toLocaleDateString('es-ES', {day:'2-digit',month:'2-digit',year:'numeric'}));
-  }
-  const a = rows[2] || [];
-  const m = rows[3] || [];
-  document.getElementById('a-hoy').textContent = fmt(a[1]);
-  document.getElementById('a-ant').textContent = fmt(a[2]);
-  document.getElementById('a-mes').textContent = fmt(a[3]);
-  document.getElementById('a-orig').textContent = fmt(a[4]);
-  document.getElementById('m-hoy').textContent = fmt(m[1], 1);
-  document.getElementById('m-ant').textContent = fmt(m[2], 1);
-  document.getElementById('m-mes').textContent = fmt(m[3], 1);
-  document.getElementById('m-orig').textContent = fmt(m[4], 1);
-  document.getElementById('comentarios').textContent = a[5] || m[5] || 'Sin comentarios';
+  const fechas = rows[1] || [];
+  const a = rows[3] || [];
+  const m = rows[4] || [];
+  const fd = new Date(fechas[1]);
+  if (!isNaN(fd.getTime())) document.getElementById('badge-sheet').textContent = 'DATOS · ' + fd.toLocaleDateString('es-ES', {day:'2-digit',month:'2-digit',year:'numeric'});
+  document.getElementById('a-hoy').textContent   = fmt(a[1]);
+  document.getElementById('a-hoy-f').textContent = fmtF(fechas[1]);
+  document.getElementById('a-ant').textContent   = fmt(a[2]);
+  document.getElementById('a-ant-f').textContent = fmtF(fechas[2]);
+  document.getElementById('a-mes').textContent   = fmt(a[3]);
+  document.getElementById('a-orig').textContent  = fmt(a[4]);
+  document.getElementById('m-hoy').textContent   = fmt(m[1],1);
+  document.getElementById('m-hoy-f').textContent = fmtF(fechas[1]);
+  document.getElementById('m-ant').textContent   = fmt(m[2],1);
+  document.getElementById('m-ant-f').textContent = fmtF(fechas[2]);
+  document.getElementById('m-mes').textContent   = fmt(m[3],1);
+  document.getElementById('m-orig').textContent  = fmt(m[4],1);
+  document.getElementById('comentarios').textContent = a[5] || '—';
+  document.getElementById('am-sem').textContent   = fmt(a[6]);
+  document.getElementById('am-sem-f').textContent = fmtF(fechas[6]);
+  document.getElementById('am-mes').textContent   = fmt(a[7]);
+  document.getElementById('am-mes-f').textContent = fmtF(fechas[7]);
+  document.getElementById('am-orig').textContent  = fmt(a[8]);
+  document.getElementById('am-orig-f').textContent= fmtF(fechas[8]);
+  document.getElementById('mm-sem').textContent   = fmt(m[6],1);
+  document.getElementById('mm-sem-f').textContent = fmtF(fechas[6]);
+  document.getElementById('mm-mes').textContent   = fmt(m[7],1);
+  document.getElementById('mm-mes-f').textContent = fmtF(fechas[7]);
+  document.getElementById('mm-orig').textContent  = fmt(m[8],1);
+  document.getElementById('mm-orig-f').textContent= fmtF(fechas[8]);
 }
 async function loadDovelas() {
   const rows = await fetchSheet('DOVELAS');
