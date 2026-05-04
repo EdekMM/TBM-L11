@@ -172,7 +172,7 @@ const SHEET_ID = '1FArDMn-wB4camgTPpRyAlyTfgDlKAw_r86V74gCsVgI';
 const BASE = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=`;
 
 const hoy = new Date();
-document.getElementById('badge-hoy').textContent = 'HOY · ' + hoy.toLocaleDateString('es-ES', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }).toUpperCase();
+document.getElementById('badge-hoy').textContent = 'HOY · ' + hoy.toLocaleDateString('es-ES', {weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'}).toUpperCase();
 
 function showTab(t) {
   ['tbm','dovelas','avance'].forEach((s,i) => {
@@ -181,118 +181,108 @@ function showTab(t) {
   });
 }
 function setStatus(msg) { document.getElementById('status-line').textContent = msg; }
-function showError(msg) { document.getElementById('error-area').innerHTML = msg ? `<div class="error-box">⚠ ${msg}</div>` : ''; }
+function showError(msg) { document.getElementById('error-area').innerHTML = msg?`<div class="error-box">⚠ ${msg}</div>`:''; }
 
 async function fetchSheet(name) {
   const url = `${BASE}${encodeURIComponent(name)}&t=${Date.now()}`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Error ${res.status} al leer "${name}".`);
   const text = await res.text();
-  const json = JSON.parse(text.replace(/^.*?({.*}).*$/s, '$1'));
-  return json.table.rows.map(r => r.c.map(c => c ? c.v : null));
+  const json = JSON.parse(text.replace(/^.*?({.*}).*$/s,'$1'));
+  // Devolvemos {v, f} para cada celda
+  return json.table.rows.map(r => r.c.map(c => c ? {v:c.v, f:c.f||null} : {v:null,f:null}));
 }
 
-function fmt(v, dec=0) {
-  if (v===null||v===undefined||v==='') return '—';
+function val(cell, dec=0) {
+  const v = cell?.v;
+  if (v===null||v===undefined) return '—';
   const n = parseFloat(v);
   if (isNaN(n)) return String(v);
   return dec>0 ? n.toFixed(dec) : Math.round(n).toLocaleString('es-ES');
 }
 
-// Google Sheets devuelve fechas como "Date(year,month,day)" — esta función lo convierte
-function fmtF(v) {
-  if (!v) return '—';
-  // Formato Date(yyyy,mm,dd) que devuelve la API de Google
-  if (typeof v === 'string' && v.startsWith('Date(')) {
-    const parts = v.replace('Date(','').replace(')','').split(',');
-    const d = new Date(parseInt(parts[0]), parseInt(parts[1]), parseInt(parts[2]));
-    return d.toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit', year:'2-digit'});
-  }
-  const d = new Date(v);
-  if (isNaN(d.getTime())) return String(v);
-  return d.toLocaleDateString('es-ES', {day:'2-digit', month:'2-digit', year:'2-digit'});
+function fecha(cell) {
+  // Google devuelve el valor formateado en "f" — lo usamos directamente
+  return cell?.f || '—';
 }
 
 function bar(pct, color) {
-  const w = Math.min(100, Math.max(0, (parseFloat(pct)||0)*100));
+  const w = Math.min(100,Math.max(0,(parseFloat(pct)||0)*100));
   return `<div class="progbar"><div class="progfill" style="width:${w.toFixed(1)}%;background:${color}"></div></div>`;
 }
 
 async function loadTBM() {
   const rows = await fetchSheet('TBM');
-  // índice 0: fila 1 vacía
-  // índice 1: fila 2 FECHAS
-  // índice 2: fila 3 cabecera
-  // índice 3: fila 4 Anillos
-  // índice 4: fila 5 Metros
-  const fechas = rows[1] || [];
-  const a = rows[3] || [];
-  const m = rows[4] || [];
+  // Google omite fila 1 vacía y trata fila 2 como cabecera → parsedNumHeaders:1
+  // rows[0] = fila 2 FECHAS
+  // rows[1] = fila 3 cabecera PRODUCCIÓN TBM
+  // rows[2] = fila 4 Anillos
+  // rows[3] = fila 5 Metros
+  const F = rows[0] || [];  // fechas
+  const A = rows[2] || [];  // anillos
+  const M = rows[3] || [];  // metros
 
-  // Badge fecha datos (columna B = índice 1)
-  const fdStr = fechas[1];
-  if (fdStr) document.getElementById('badge-sheet').textContent = 'DATOS · ' + fmtF(fdStr);
+  // Badge fecha datos (col B = índice 1)
+  document.getElementById('badge-sheet').textContent = 'DATOS · ' + (fecha(F[1]));
 
-  // Producción diaria
-  document.getElementById('a-hoy').textContent    = fmt(a[1]);
-  document.getElementById('a-hoy-f').textContent  = fmtF(fechas[1]);
-  document.getElementById('a-ant').textContent    = fmt(a[2]);
-  document.getElementById('a-ant-f').textContent  = fmtF(fechas[2]);
-  document.getElementById('a-mes').textContent    = fmt(a[3]);
-  document.getElementById('a-orig').textContent   = fmt(a[4]);
+  // Anillos: B=1:Hoy, C=2:Ant, D=3:Mes, E=4:Orig, F=5:Coment, G=6:MaxSem, H=7:MaxMes, I=8:MaxOrig
+  document.getElementById('a-hoy').textContent   = val(A[1]);
+  document.getElementById('a-hoy-f').textContent = fecha(F[1]);
+  document.getElementById('a-ant').textContent   = val(A[2]);
+  document.getElementById('a-ant-f').textContent = fecha(F[2]);
+  document.getElementById('a-mes').textContent   = val(A[3]);
+  document.getElementById('a-orig').textContent  = val(A[4]);
+  document.getElementById('comentarios').textContent = A[5]?.v || '—';
+  document.getElementById('am-sem').textContent   = val(A[6]);
+  document.getElementById('am-sem-f').textContent = fecha(F[6]);
+  document.getElementById('am-mes').textContent   = val(A[7]);
+  document.getElementById('am-mes-f').textContent = fecha(F[7]);
+  document.getElementById('am-orig').textContent  = val(A[8]);
+  document.getElementById('am-orig-f').textContent= fecha(F[8]);
 
-  document.getElementById('m-hoy').textContent    = fmt(m[1], 1);
-  document.getElementById('m-hoy-f').textContent  = fmtF(fechas[1]);
-  document.getElementById('m-ant').textContent    = fmt(m[2], 1);
-  document.getElementById('m-ant-f').textContent  = fmtF(fechas[2]);
-  document.getElementById('m-mes').textContent    = fmt(m[3], 1);
-  document.getElementById('m-orig').textContent   = fmt(m[4], 1);
-
-  document.getElementById('comentarios').textContent = a[5] || '—';
-
-  // Máximos (col G=6, H=7, I=8)
-  document.getElementById('am-sem').textContent   = fmt(a[6]);
-  document.getElementById('am-sem-f').textContent = fmtF(fechas[6]);
-  document.getElementById('am-mes').textContent   = fmt(a[7]);
-  document.getElementById('am-mes-f').textContent = fmtF(fechas[7]);
-  document.getElementById('am-orig').textContent  = fmt(a[8]);
-  document.getElementById('am-orig-f').textContent= fmtF(fechas[8]);
-
-  document.getElementById('mm-sem').textContent   = fmt(m[6], 1);
-  document.getElementById('mm-sem-f').textContent = fmtF(fechas[6]);
-  document.getElementById('mm-mes').textContent   = fmt(m[7], 1);
-  document.getElementById('mm-mes-f').textContent = fmtF(fechas[7]);
-  document.getElementById('mm-orig').textContent  = fmt(m[8], 1);
-  document.getElementById('mm-orig-f').textContent= fmtF(fechas[8]);
+  // Metros
+  document.getElementById('m-hoy').textContent   = val(M[1],1);
+  document.getElementById('m-hoy-f').textContent = fecha(F[1]);
+  document.getElementById('m-ant').textContent   = val(M[2],1);
+  document.getElementById('m-ant-f').textContent = fecha(F[2]);
+  document.getElementById('m-mes').textContent   = val(M[3],1);
+  document.getElementById('m-orig').textContent  = val(M[4],1);
+  document.getElementById('mm-sem').textContent   = val(M[6],1);
+  document.getElementById('mm-sem-f').textContent = fecha(F[6]);
+  document.getElementById('mm-mes').textContent   = val(M[7],1);
+  document.getElementById('mm-mes-f').textContent = fecha(F[7]);
+  document.getElementById('mm-orig').textContent  = val(M[8],1);
+  document.getElementById('mm-orig-f').textContent= fecha(F[8]);
 }
 
 async function loadDovelas() {
   const rows = await fetchSheet('DOVELAS');
-  document.getElementById('semana-label').textContent = rows[0]?.[1] || '—';
-  const c = document.getElementById('dovelas-rows'); c.innerHTML = '';
+  document.getElementById('semana-label').textContent = rows[0]?.[1]?.v || '—';
+  const c = document.getElementById('dovelas-rows'); c.innerHTML='';
   rows.slice(1).forEach(r => {
-    if (!r[0]) return;
-    const pct = parseFloat(r[2]), hasPct = !isNaN(pct);
-    const color = hasPct ? (pct>=0.8?'#34d399':'#f59e0b') : '#4f8ef7';
-    const pillCls = hasPct ? (pct>=0.8?'pct-ok':'pct-warn') : '';
-    c.innerHTML += `<div class="dov-row"><div class="dov-top"><span class="dov-label">${r[0]}</span><div class="dov-right">${hasPct?`<span class="pct-pill ${pillCls}">${(pct*100).toFixed(1)}%</span>`:''}<span class="dov-val">${fmt(r[1])}</span></div></div>${hasPct?bar(pct,color):''}<div class="dov-sem"><span>Sem. ant.: ${fmt(r[3])}</span><span>Sem. act.: ${fmt(r[4])}</span></div></div>`;
+    if (!r[0]?.v) return;
+    const pct=parseFloat(r[2]?.v), hasPct=!isNaN(pct);
+    const color=hasPct?(pct>=0.8?'#34d399':'#f59e0b'):'#4f8ef7';
+    const pillCls=hasPct?(pct>=0.8?'pct-ok':'pct-warn'):'';
+    const v=(cell,dec=0)=>{const n=parseFloat(cell?.v);return isNaN(n)?'—':dec>0?n.toFixed(dec):Math.round(n).toLocaleString('es-ES');};
+    c.innerHTML+=`<div class="dov-row"><div class="dov-top"><span class="dov-label">${r[0].v}</span><div class="dov-right">${hasPct?`<span class="pct-pill ${pillCls}">${(pct*100).toFixed(1)}%</span>`:''}<span class="dov-val">${v(r[1])}</span></div></div>${hasPct?bar(pct,color):''}<div class="dov-sem"><span>Sem. ant.: ${v(r[3])}</span><span>Sem. act.: ${v(r[4])}</span></div></div>`;
   });
 }
 
 async function loadAvance() {
   const rows = await fetchSheet('AVANCE');
-  const suma = rows[rows.length-1];
-  const totEjec=parseFloat(suma?.[2]), totTotal=parseFloat(suma?.[1]), totPct=parseFloat(suma?.[4]);
-  document.getElementById('tot-ejec').textContent = isNaN(totEjec)?'—':totEjec.toFixed(0)+' m';
-  document.getElementById('tot-total').textContent = isNaN(totTotal)?'—':totTotal.toFixed(0)+' m';
-  document.getElementById('tot-pct').textContent = isNaN(totPct)?'—':(totPct*100).toFixed(2)+'%';
-  if (!isNaN(totPct)) document.getElementById('tot-bar').style.width = (totPct*100).toFixed(2)+'%';
-  const c = document.getElementById('avance-rows'); c.innerHTML = '';
-  rows.slice(2, rows.length-1).forEach(r => {
-    if (!r[0]) return;
-    const ejec=parseFloat(r[2]), pct=parseFloat(r[4]), dist=parseFloat(r[1]), pdte=parseFloat(r[3]);
-    const activo = !isNaN(ejec)&&ejec>0;
-    c.innerHTML += `<div class="station-row"><div class="station-top"><span class="station-name ${activo?'':'pending'}">${activo?'<span class="tbm-dot"></span>':''}${r[0]}</span>${activo?`<span class="station-pct">${(pct*100).toFixed(1)}%</span>`:'<span style="font-size:10px;font-family:var(--mono);color:var(--text3)">PENDIENTE</span>'}</div><div style="margin-bottom:5px"><span class="station-dist">${isNaN(dist)?'—':dist.toFixed(0)} m tramo</span></div>${activo?bar(pct,'#4f8ef7')+'<div class="station-meta"><span>Ejecutado: '+ejec.toFixed(0)+' m</span><span>Pendiente: '+(isNaN(pdte)?'—':pdte.toFixed(0))+' m</span></div>':''}</div>`;
+  const suma=rows[rows.length-1];
+  const totEjec=parseFloat(suma?.[2]?.v),totTotal=parseFloat(suma?.[1]?.v),totPct=parseFloat(suma?.[4]?.v);
+  document.getElementById('tot-ejec').textContent=isNaN(totEjec)?'—':totEjec.toFixed(0)+' m';
+  document.getElementById('tot-total').textContent=isNaN(totTotal)?'—':totTotal.toFixed(0)+' m';
+  document.getElementById('tot-pct').textContent=isNaN(totPct)?'—':(totPct*100).toFixed(2)+'%';
+  if(!isNaN(totPct)) document.getElementById('tot-bar').style.width=(totPct*100).toFixed(2)+'%';
+  const c=document.getElementById('avance-rows');c.innerHTML='';
+  rows.slice(1,rows.length-1).forEach(r=>{
+    if(!r[0]?.v) return;
+    const ejec=parseFloat(r[2]?.v),pct=parseFloat(r[4]?.v),dist=parseFloat(r[1]?.v),pdte=parseFloat(r[3]?.v);
+    const activo=!isNaN(ejec)&&ejec>0;
+    c.innerHTML+=`<div class="station-row"><div class="station-top"><span class="station-name ${activo?'':'pending'}">${activo?'<span class="tbm-dot"></span>':''}${r[0].v}</span>${activo?`<span class="station-pct">${(pct*100).toFixed(1)}%</span>`:'<span style="font-size:10px;font-family:var(--mono);color:var(--text3)">PENDIENTE</span>'}</div><div style="margin-bottom:5px"><span class="station-dist">${isNaN(dist)?'—':dist.toFixed(0)} m tramo</span></div>${activo?bar(pct,'#4f8ef7')+'<div class="station-meta"><span>Ejecutado: '+ejec.toFixed(0)+' m</span><span>Pendiente: '+(isNaN(pdte)?'—':pdte.toFixed(0))+' m</span></div>':''}</div>`;
   });
 }
 
@@ -300,8 +290,8 @@ async function loadData() {
   setStatus('Actualizando...');
   showError('');
   try {
-    await Promise.all([loadTBM(), loadDovelas(), loadAvance()]);
-    setStatus('Última actualización: ' + new Date().toLocaleTimeString('es-ES'));
+    await Promise.all([loadTBM(),loadDovelas(),loadAvance()]);
+    setStatus('Última actualización: '+new Date().toLocaleTimeString('es-ES'));
   } catch(e) {
     showError(e.message);
     setStatus('Error al cargar datos');
