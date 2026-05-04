@@ -7,21 +7,11 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0d0f14;
-  --bg2: #141720;
-  --bg3: #1c2030;
-  --border: #2a2f3f;
-  --accent: #4f8ef7;
-  --accent2: #34d399;
-  --warn: #f59e0b;
-  --danger: #ef4444;
-  --text: #e8eaf0;
-  --text2: #8b91a8;
-  --text3: #555d74;
-  --radius: 12px;
-  --radius-sm: 7px;
-  --mono: 'DM Mono', monospace;
-  --sans: 'DM Sans', sans-serif;
+  --bg: #0d0f14; --bg2: #141720; --bg3: #1c2030; --border: #2a2f3f;
+  --accent: #4f8ef7; --accent2: #34d399; --warn: #f59e0b; --danger: #ef4444;
+  --text: #e8eaf0; --text2: #8b91a8; --text3: #555d74;
+  --radius: 12px; --radius-sm: 7px;
+  --mono: 'DM Mono', monospace; --sans: 'DM Sans', sans-serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--sans); background: var(--bg); color: var(--text); min-height: 100vh; }
@@ -44,11 +34,11 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .section.active { display: block; }
 .card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px; }
 .card-title { font-size: 10px; font-family: var(--mono); color: var(--text3); text-transform: uppercase; letter-spacing: .1em; margin-bottom: 14px; }
-.metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.metric { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 8px; text-align: center; }
-.metric-label { font-size: 10px; color: var(--text3); margin-bottom: 6px; font-family: var(--mono); }
-.metric-val { font-size: 22px; font-weight: 600; color: var(--text); font-family: var(--mono); line-height: 1; }
-.metric-unit { font-size: 10px; color: var(--text3); margin-top: 3px; }
+.metrics { display: grid; gap: 8px; }
+.metric { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 10px 6px; text-align: center; }
+.metric-label { font-size: 9px; color: var(--text3); margin-bottom: 5px; font-family: var(--mono); }
+.metric-val { font-size: 20px; font-weight: 600; color: var(--text); font-family: var(--mono); line-height: 1; }
+.metric-unit { font-size: 9px; color: var(--text3); margin-top: 3px; }
 .comment-box { background: var(--bg3); border-left: 2px solid var(--accent); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 10px 12px; font-size: 13px; color: var(--text2); line-height: 1.5; min-height: 36px; }
 .dov-row { padding: 10px 0; border-bottom: 1px solid var(--border); }
 .dov-row:last-child { border-bottom: none; }
@@ -112,16 +102,18 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   <div id="sec-tbm" class="section active">
     <div class="card">
       <div class="card-title">Anillos colocados</div>
-      <div class="metrics">
+      <div class="metrics" style="grid-template-columns:repeat(4,1fr)">
         <div class="metric"><div class="metric-label">HOY</div><div class="metric-val" id="a-hoy">—</div><div class="metric-unit">anillos</div></div>
+        <div class="metric"><div class="metric-label">ANTERIOR</div><div class="metric-val" id="a-ant">—</div><div class="metric-unit">anillos</div></div>
         <div class="metric"><div class="metric-label">MES</div><div class="metric-val" id="a-mes">—</div><div class="metric-unit">anillos</div></div>
         <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="a-orig">—</div><div class="metric-unit">anillos</div></div>
       </div>
     </div>
     <div class="card">
       <div class="card-title">Metros excavados</div>
-      <div class="metrics">
+      <div class="metrics" style="grid-template-columns:repeat(4,1fr)">
         <div class="metric"><div class="metric-label">HOY</div><div class="metric-val" id="m-hoy">—</div><div class="metric-unit">m</div></div>
+        <div class="metric"><div class="metric-label">ANTERIOR</div><div class="metric-val" id="m-ant">—</div><div class="metric-unit">m</div></div>
         <div class="metric"><div class="metric-label">MES</div><div class="metric-val" id="m-mes">—</div><div class="metric-unit">m</div></div>
         <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="m-orig">—</div><div class="metric-unit">m</div></div>
       </div>
@@ -174,7 +166,7 @@ function showError(msg) { document.getElementById('error-area').innerHTML = msg 
 async function fetchSheet(name) {
   const url = `${BASE}${encodeURIComponent(name)}&t=${Date.now()}`;
   const res = await fetch(url);
-  if (!res.ok) throw new Error(`Error ${res.status} al leer la pestaña "${name}". Comprueba que el Google Sheet está compartido como público (Cualquiera con el enlace → Lector).`);
+  if (!res.ok) throw new Error(`Error ${res.status} al leer la pestaña "${name}".`);
   const text = await res.text();
   const json = JSON.parse(text.replace(/^.*?({.*}).*$/s, '$1'));
   return json.table.rows.map(r => r.c.map(c => c ? c.v : null));
@@ -192,20 +184,26 @@ function bar(pct, color) {
 async function loadTBM() {
   const rows = await fetchSheet('TBM');
   const fecha = rows[0]?.[3];
-  if (fecha) { const d = new Date(fecha); document.getElementById('badge-sheet').textContent = 'DATOS · ' + (isNaN(d.getTime()) ? String(fecha) : d.toLocaleDateString('es-ES', {day:'2-digit',month:'2-digit',year:'numeric'})); }
-  const a = rows[2]||[], m = rows[3]||[];
+  if (fecha) {
+    const d = new Date(fecha);
+    document.getElementById('badge-sheet').textContent = 'DATOS · ' + (isNaN(d.getTime()) ? String(fecha) : d.toLocaleDateString('es-ES', {day:'2-digit',month:'2-digit',year:'numeric'}));
+  }
+  const a = rows[2] || [];
+  const m = rows[3] || [];
   document.getElementById('a-hoy').textContent = fmt(a[1]);
-  document.getElementById('a-mes').textContent = fmt(a[2]);
-  document.getElementById('a-orig').textContent = fmt(a[3]);
-  document.getElementById('m-hoy').textContent = fmt(m[1],1);
-  document.getElementById('m-mes').textContent = fmt(m[2],1);
-  document.getElementById('m-orig').textContent = fmt(m[3],1);
-  document.getElementById('comentarios').textContent = a[4]||m[4]||'Sin comentarios';
+  document.getElementById('a-ant').textContent = fmt(a[2]);
+  document.getElementById('a-mes').textContent = fmt(a[3]);
+  document.getElementById('a-orig').textContent = fmt(a[4]);
+  document.getElementById('m-hoy').textContent = fmt(m[1], 1);
+  document.getElementById('m-ant').textContent = fmt(m[2], 1);
+  document.getElementById('m-mes').textContent = fmt(m[3], 1);
+  document.getElementById('m-orig').textContent = fmt(m[4], 1);
+  document.getElementById('comentarios').textContent = a[5] || m[5] || 'Sin comentarios';
 }
 async function loadDovelas() {
   const rows = await fetchSheet('DOVELAS');
-  document.getElementById('semana-label').textContent = rows[0]?.[1]||'—';
-  const c = document.getElementById('dovelas-rows'); c.innerHTML='';
+  document.getElementById('semana-label').textContent = rows[0]?.[1] || '—';
+  const c = document.getElementById('dovelas-rows'); c.innerHTML = '';
   rows.slice(1).forEach(r => {
     if (!r[0]) return;
     const pct = parseFloat(r[2]), hasPct = !isNaN(pct);
@@ -222,7 +220,7 @@ async function loadAvance() {
   document.getElementById('tot-total').textContent = isNaN(totTotal)?'—':totTotal.toFixed(0)+' m';
   document.getElementById('tot-pct').textContent = isNaN(totPct)?'—':(totPct*100).toFixed(2)+'%';
   if (!isNaN(totPct)) document.getElementById('tot-bar').style.width = (totPct*100).toFixed(2)+'%';
-  const c = document.getElementById('avance-rows'); c.innerHTML='';
+  const c = document.getElementById('avance-rows'); c.innerHTML = '';
   rows.slice(2, rows.length-1).forEach(r => {
     if (!r[0]) return;
     const ejec=parseFloat(r[2]), pct=parseFloat(r[4]), dist=parseFloat(r[1]), pdte=parseFloat(r[3]);
@@ -245,6 +243,3 @@ loadData();
 </script>
 </body>
 </html>
-```
-
-Copia todo esto, pégalo en el editor de GitHub, y pulsa **Commit changes**. Dime cuando esté hecho.
