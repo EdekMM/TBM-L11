@@ -68,7 +68,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .tot-sub { font-size: 14px; color: var(--text2); }
 .tot-label { font-size: 14px; color: var(--text2); }
 .tot-pct-row { display: flex; justify-content: flex-end; margin-top: 5px; }
-.tot-pct-val { font-size: 12px; font-family: var(--mono); color: var(--accent); }
+.tot-pct-val { font-size: 16px; font-family: var(--mono); color: var(--accent); font-weight: 600; }
 .station-row { padding: 12px 0; border-bottom: 1px solid var(--border); }
 .station-row:last-child { border-bottom: none; }
 .station-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
@@ -76,6 +76,7 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
 .station-name.pending { color: var(--text3); }
 .station-pct { font-size: 14px; font-family: var(--mono); color: var(--accent); font-weight: 600; }
 .station-dist { font-size: 13px; font-family: var(--mono); color: var(--text2); }
+.station-prevista { font-size: 13px; font-family: var(--mono); color: var(--warn); margin-top: 3px; }
 .station-meta { display: flex; justify-content: space-between; margin-top: 4px; }
 .station-meta span { font-size: 13px; font-family: var(--mono); color: var(--text2); }
 .tbm-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-right: 6px; box-shadow: 0 0 6px var(--accent); animation: pulse 1.5s ease-in-out infinite; }
@@ -110,7 +111,6 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
   </div>
   <div id="error-area"></div>
   <div id="sec-tbm" class="section active">
-
     <div class="card">
       <div class="card-title">Anillos colocados</div>
       <div class="metrics" style="grid-template-columns:repeat(4,1fr)">
@@ -120,7 +120,6 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
         <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="a-orig">—</div><div class="metric-unit">anillos</div></div>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title">Metros excavados</div>
       <div class="metrics" style="grid-template-columns:repeat(4,1fr)">
@@ -130,12 +129,10 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
         <div class="metric"><div class="metric-label">ORIGEN</div><div class="metric-val" id="m-orig">—</div><div class="metric-unit">m</div></div>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title">Comentarios</div>
       <div class="comment-box" id="comentarios">—</div>
     </div>
-
     <div class="card">
       <div class="card-title">Medias de producción</div>
       <div class="col-header">
@@ -158,7 +155,6 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
         </div>
       </div>
     </div>
-
     <div class="card">
       <div class="card-title">Máximos históricos</div>
       <div class="col-header">
@@ -191,7 +187,6 @@ body { font-family: var(--sans); background: var(--bg); color: var(--text); min-
         <div class="stat-fecha" id="mmax-orig-f">—</div>
       </div>
     </div>
-
   </div>
 
   <div id="sec-dovelas" class="section">
@@ -266,30 +261,22 @@ function bar(pct, color) {
 async function loadTBM() {
   const rows = await fetchSheet('TBM');
   const F=rows[0]||[], A=rows[2]||[], M=rows[3]||[];
-
   set('badge-sheet', 'DATOS · '+fecha(F[1]));
-
   set('a-hoy',   val(A[1]));   set('a-hoy-f', fecha(F[1]));
   set('a-ant',   val(A[2]));   set('a-ant-f', fecha(F[2]));
   set('a-mes',   val(A[3]));
   set('a-orig',  val(A[4]));
-
   set('m-hoy',   val(M[1],1)); set('m-hoy-f', fecha(F[1]));
   set('m-ant',   val(M[2],1)); set('m-ant-f', fecha(F[2]));
   set('m-mes',   val(M[3],1));
   set('m-orig',  val(M[4],1));
-
   set('comentarios', A[5]?.v || '—');
-
-  // Medias G=6, H=7, I=8
   set('amed-sem',  val(A[6],1));
   set('amed-mes',  val(A[7],1));
   set('amed-orig', val(A[8],1));
   set('mmed-sem',  val(M[6],1));
   set('mmed-mes',  val(M[7],1));
   set('mmed-orig', val(M[8],1));
-
-  // Máximos J=9, K=10, L=11
   set('amax-sem',    val(A[9]));
   set('amax-mes',    val(A[10]));
   set('amax-orig',   val(A[11]));
@@ -320,18 +307,43 @@ async function loadDovelas() {
 
 async function loadAvance() {
   const rows = await fetchSheet('AVANCE');
+  // Google omite fila 1 vacía → rows[0]=fila2(fecha), rows[1]=cabecera, rows[2..n-1]=tramos, rows[n-1]=SUMA
   const suma=rows[rows.length-1];
-  const totEjec=parseFloat(suma?.[2]?.v),totTotal=parseFloat(suma?.[1]?.v),totPct=parseFloat(suma?.[4]?.v);
+  // SUMA: B=1:total, C=2:ejecutado, D=3:pendiente, F=5:%
+  const totEjec=parseFloat(suma?.[2]?.v),totTotal=parseFloat(suma?.[1]?.v),totPct=parseFloat(suma?.[5]?.v);
   set('tot-ejec', isNaN(totEjec)?'—':totEjec.toFixed(0)+' m');
   set('tot-total', isNaN(totTotal)?'—':totTotal.toFixed(0)+' m');
-  set('tot-pct', isNaN(totPct)?'—':(totPct*100).toFixed(2)+'%');
+  set('tot-pct', isNaN(totPct)?'—':(totPct*100).toFixed(1)+'%');
   if(!isNaN(totPct)) document.getElementById('tot-bar').style.width=(totPct*100).toFixed(2)+'%';
-  const c=document.getElementById('avance-rows');c.innerHTML='';
+
+  const c=document.getElementById('avance-rows'); c.innerHTML='';
+  // Tramos: desde rows[1] hasta rows[n-2] (saltamos cabecera y SUMA)
   rows.slice(1,rows.length-1).forEach(r=>{
     if(!r[0]?.v) return;
-    const ejec=parseFloat(r[2]?.v),pct=parseFloat(r[4]?.v),dist=parseFloat(r[1]?.v),pdte=parseFloat(r[3]?.v);
+    // A=0:tramo, B=1:dist, C=2:ejec, D=3:pdte, E=4:fecha_prevista, F=5:%
+    const ejec=parseFloat(r[2]?.v);
+    const pct=parseFloat(r[5]?.v);
+    const dist=parseFloat(r[1]?.v);
+    const pdte=parseFloat(r[3]?.v);
+    const fprev=r[4]?.f || null;
     const activo=!isNaN(ejec)&&ejec>0;
-    c.innerHTML+=`<div class="station-row"><div class="station-top"><span class="station-name ${activo?'':'pending'}">${activo?'<span class="tbm-dot"></span>':''}${r[0].v}</span>${activo?`<span class="station-pct">${(pct*100).toFixed(1)}%</span>`:'<span style="font-size:10px;font-family:var(--mono);color:var(--text3)">PENDIENTE</span>'}</div><div style="margin-bottom:5px"><span class="station-dist">${isNaN(dist)?'—':dist.toFixed(0)} m tramo</span></div>${activo?bar(pct,'#4f8ef7')+'<div class="station-meta"><span>Ejecutado: '+ejec.toFixed(0)+' m</span><span>Pendiente: '+(isNaN(pdte)?'—':pdte.toFixed(0))+' m</span></div>':''}</div>`;
+
+    const prevBlock = fprev
+      ? `<div class="station-prevista">📅 Fecha prevista: ${fprev}</div>`
+      : '';
+
+    c.innerHTML+=`<div class="station-row">
+      <div class="station-top">
+        <span class="station-name ${activo?'':'pending'}">${activo?'<span class="tbm-dot"></span>':''}${r[0].v}</span>
+        ${activo
+          ? `<span class="station-pct">${(pct*100).toFixed(1)}%</span>`
+          : '<span style="font-size:12px;font-family:var(--mono);color:var(--text3)">PENDIENTE</span>'}
+      </div>
+      <div style="margin-bottom:4px"><span class="station-dist">${isNaN(dist)?'—':dist.toFixed(0)} m tramo</span></div>
+      ${activo ? bar(pct,'#4f8ef7') : ''}
+      ${activo ? `<div class="station-meta"><span>Ejecutado: ${ejec.toFixed(0)} m</span><span>Pendiente: ${isNaN(pdte)?'—':pdte.toFixed(0)} m</span></div>` : ''}
+      ${prevBlock}
+    </div>`;
   });
 }
 
